@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.motors.GoBILDA5202Series;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -13,6 +14,8 @@ public class Drive extends LinearOpMode {
     private DcMotor left;
     private Servo right_hand;
     private Servo left_hand;
+    private DcMotor tower;
+    private Servo liftHand;
     private boolean isOpen;
 
     /**
@@ -24,6 +27,7 @@ public class Drive extends LinearOpMode {
         left = hardwareMap.get(DcMotor.class, "left");
         right_hand = hardwareMap.get(Servo.class, "right_hand");
         left_hand = hardwareMap.get(Servo.class, "left_hand");
+        tower = hardwareMap.get(GoBILDA5202Series.class, "tower");
 
         // Reverse one of the drive motors.
         // You will have to determine which motor to reverse for your robot.
@@ -66,6 +70,18 @@ public class Drive extends LinearOpMode {
                     // the topmost position corresponds to maximum forward power.
                     right.setPower(-(0.4 * gamepad1.left_stick_y));
                     left.setPower(-(0.4 * gamepad1.right_stick_y));
+                }
+                if(gamepad2.dpad_up) {
+                    tower.setPower(0.1);
+                }
+                if(gamepad2.dpad_down) {
+                    tower.setPower(-0.1);
+                }
+                if(gamepad2.x) {
+                    liftHand.setPosition(0.5);
+                }
+                if(gamepad2.y) {
+                    liftHand.setPosition(0);
                 }
                 telemetry.addData("Left Pow", left.getPower());
                 telemetry.addData("Right Pow", right.getPower());
