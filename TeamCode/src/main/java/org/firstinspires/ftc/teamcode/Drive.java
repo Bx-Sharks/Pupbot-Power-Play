@@ -13,6 +13,7 @@ public class Drive extends LinearOpMode {
     private DcMotor left;
     private Servo right_hand;
     private Servo left_hand;
+    private boolean isOpen;
 
     /**
      * This function is executed when this Op Mode is selected from the Driver Station.
@@ -43,12 +44,14 @@ public class Drive extends LinearOpMode {
                 left.setPower(-(0.7 * gamepad1.right_stick_y));
                 right.setPower(-(0.7 * gamepad1.left_stick_y));
                 if (gamepad2.a) {
-                    left_hand.setPosition(0.7);
-                    right_hand.setPosition(0);
-                }
-                if (gamepad2.b) {
-                    left_hand.setPosition(0.9);
-                    right_hand.setPosition(0.2);
+                    if(isOpen) {
+                        left_hand.setPosition(0.9);
+                        right_hand.setPosition(0.2);
+                    } else {
+                        left_hand.setPosition(0.7);
+                        right_hand.setPosition(0);
+                    }
+                    isOpen = !isOpen;
                 }
                 if (gamepad1.left_bumper) {
                     // The Y axis of a joystick ranges from -1 in its topmost position
