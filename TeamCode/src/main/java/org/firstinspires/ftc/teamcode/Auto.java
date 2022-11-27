@@ -26,18 +26,28 @@ public class Auto extends LinearOpMode {
         rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         waitForStart();
-        driveTicks(300, 0.1);
-        turnTicks(-50, 0.1);
+        forwardLeft();
+    }
+
+    public void forwardLeft() {
+        driveTicks(300, 0.15);
+        turnTicks(-125, 0.1);
+        driveTicks(300, 0.15);
+    }
+
+    public void forwardRight() {
+        driveTicks(300, 0.15);
+        turnTicks(125, 0.1);
+        driveTicks(300, 0.15);
     }
 
     public void driveTicks(double driveTicks, double speed) {
-        int targetTicks;
-
         if (opModeIsActive()) {
-            targetTicks = (int) leftMotor.getCurrentPosition() + (int) driveTicks;
+            int targetLeft = (int) leftMotor.getCurrentPosition() + (int) driveTicks;
+            int targetRight = (int) rightMotor.getCurrentPosition() +(int) driveTicks;
 
-            leftMotor.setTargetPosition(targetTicks);
-            rightMotor.setTargetPosition(targetTicks);
+            leftMotor.setTargetPosition(targetLeft);
+            rightMotor.setTargetPosition(targetRight);
 
             leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -52,6 +62,8 @@ public class Auto extends LinearOpMode {
 
             leftMotor.setPower(0);
             rightMotor.setPower(0);
+
+            sleep(200);
         }
     }
 
@@ -77,6 +89,8 @@ public class Auto extends LinearOpMode {
 
             leftMotor.setPower(0);
             rightMotor.setPower(0);
+
+            sleep(200);
         }
     }
 }

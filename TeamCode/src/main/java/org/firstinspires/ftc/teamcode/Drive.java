@@ -12,11 +12,13 @@ public class Drive extends LinearOpMode {
 
     private DcMotor right;
     private DcMotor left;
+    private DcMotor side;
     private Servo right_hand;
     private Servo left_hand;
     private DcMotor tower;
     private Servo liftHand;
-    private boolean isOpen;
+    private boolean frontIsOpen;
+    private boolean towerIsOpen;
 
     /**
      * This function is executed when this Op Mode is selected from the Driver Station.
@@ -25,9 +27,12 @@ public class Drive extends LinearOpMode {
     public void runOpMode() {
         right = hardwareMap.get(DcMotor.class, "right");
         left = hardwareMap.get(DcMotor.class, "left");
+        side = hardwareMap.get(DcMotor.class, "side");
         right_hand = hardwareMap.get(Servo.class, "right_hand");
         left_hand = hardwareMap.get(Servo.class, "left_hand");
-        tower = hardwareMap.get(GoBILDA5202Series.class, "tower");
+        tower = hardwareMap.get(DcMotor.class, "tower");
+        liftHand = hardwareMap.get(Servo.class, "towerHand");
+
 
         // Reverse one of the drive motors.
         // You will have to determine which motor to reverse for your robot.
@@ -45,17 +50,33 @@ public class Drive extends LinearOpMode {
                 // The Y axis of a joystick ranges from -1 in its topmost position
                 // to +1 in its bottommost position. We negate this value so that
                 // the topmost position corresponds to maximum forward power.
-                left.setPower(-(0.7 * gamepad1.right_stick_y));
+//                left.setPower(-(0.7 * gamepad1.right_stick_y));
+//                right.setPower(-(0.7 * gamepad1.left_stick_y));
+                left.setPower(-(0.7 * gamepad1.left_stick_y));
                 right.setPower(-(0.7 * gamepad1.left_stick_y));
-                if (gamepad2.a) {
-                    if(isOpen) {
+                side.setPower(0.7 * gamepad1.right_stick_x);
+
+                tower.setPower(0.5 * gamepad2.left_stick_y);
+                if (gamepad1.a) {
+                    if(frontIsOpen) {
                         left_hand.setPosition(0.9);
                         right_hand.setPosition(0.2);
                     } else {
                         left_hand.setPosition(0.7);
                         right_hand.setPosition(0);
                     }
-                    isOpen = !isOpen;
+                    sleep(400);
+                    frontIsOpen = !frontIsOpen;
+                }
+                if(gamepad2.a) {
+                    if(towerIsOpen) {
+                        liftHand.setPosition(0);
+                    } else {
+                        liftHand.setPosition(1);
+                    }
+                    sleep(400);
+                    towerIsOpen = !towerIsOpen;
+
                 }
                 if (gamepad1.left_bumper) {
                     // The Y axis of a joystick ranges from -1 in its topmost position
@@ -71,20 +92,16 @@ public class Drive extends LinearOpMode {
                     right.setPower(-(0.4 * gamepad1.left_stick_y));
                     left.setPower(-(0.4 * gamepad1.right_stick_y));
                 }
-                if(gamepad2.dpad_up) {
-                    tower.setPower(0.1);
+                // go up
+                if(gamepad1.dpad_left) {
+                    side.setPower(0.5);
                 }
-                if(gamepad2.dpad_down) {
-                    tower.setPower(-0.1);
-                }
-                if(gamepad2.x) {
-                    liftHand.setPosition(0.5);
-                }
-                if(gamepad2.y) {
-                    liftHand.setPosition(0);
+                if(gamepad1.dpad_right) {
+                    side.setPower(-0.5);
                 }
                 telemetry.addData("Left Pow", left.getPower());
                 telemetry.addData("Right Pow", right.getPower());
+                telemetry.addData("Tower rotation", tower.getCurrentPosition());
                 telemetry.update();
             }
         }
